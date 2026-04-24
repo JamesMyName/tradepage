@@ -1,98 +1,267 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { useState, useRef } from "react";
+import { useRouter } from "expo-router";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
+  Animated
+} from "react-native";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const DATA = [
+  { id: "1", name: "Ralph Lauren Polo", image: "https://i.imgur.com/8Km9tLL.png" },
+  { id: "2", name: "Bench Perfume", image: "https://i.imgur.com/j0J7K9M.png" },
+  { id: "3", name: "Thanos Gauntlet", image: "https://i.imgur.com/xZ9YF6G.png" },
+  { id: "4", name: "Fila Bag", image: "https://i.imgur.com/2nCt3Sbl.png" },
+  { id: "5", name: "Adidas Cap", image: "https://i.imgur.com/6oK4B8M.png" },
+];
 
-export default function HomeScreen() {
+const OFFERS_DATA = [
+  { id: "1", name: "Fila Bag", image: "https://i.imgur.com/2nCt3Sbl.png" },
+  { id: "2", name: "Adidas Cap", image: "https://i.imgur.com/6oK4B8M.png" },
+  { id: "3", name: "Freedom Graphic Tee", image: "https://via.placeholder.com/60" },
+];
+
+const NAVY = "#2e2d7c";
+
+export default function TradeScreen() {
+  const [activeTab, setActiveTab] = useState("trades");
+  const router = useRouter();
+
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const addButtonScale = useRef(new Animated.Value(1)).current;
+
+  const switchTab = (tab: string) => {
+    Animated.sequence([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    setActiveTab(tab);
+  };
+
+  const handleAddItemPress = () => {
+    Animated.sequence([
+      Animated.timing(addButtonScale, {
+        toValue: 0.95,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(addButtonScale, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      router.push("/add-item");
+    });
+  };
+
+  const renderTradeItem = ({ item }: any) => (
+    <View style={styles.card}>
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <Text style={styles.itemName}>{item.name}</Text>
+      <TouchableOpacity style={styles.offerButton}>
+        <Text style={styles.offerText}>See Offers</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const renderOfferItem = ({ item }: any) => (
+    <View style={styles.card}>
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <Text style={styles.itemName}>{item.name}</Text>
+      <TouchableOpacity style={styles.statusButton}>
+        <Text style={styles.offerText}>Status</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <SafeAreaView style={styles.container}>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      {/* Tabs */}
+      <View style={styles.tabs}>
+        <TouchableOpacity
+          style={activeTab === "trades" ? styles.activeTab : styles.inactiveTab}
+          onPress={() => switchTab("trades")}
+        >
+          <Text style={activeTab === "trades" ? styles.activeText : styles.inactiveText}>
+            Your Trades
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={activeTab === "offers" ? styles.activeTab : styles.inactiveTab}
+          onPress={() => switchTab("offers")}
+        >
+          <Text style={activeTab === "offers" ? styles.activeText : styles.inactiveText}>
+            Your Offers
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Search */}
+      <View style={styles.searchBar}>
+        <Text style={styles.searchIcon}>🔍</Text>
+        <TextInput
+          placeholder="Search for items..."
+          placeholderTextColor="#888"
+          style={styles.searchInput}
+        />
+      </View>
+
+      {/* Sort + Filter */}
+      <View style={styles.row}>
+        <TouchableOpacity style={styles.smallButton}>
+          <Text style={styles.smallText}>Sort ⬍</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.smallButton}>
+          <Text style={styles.smallText}>Filter 🔽</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Item List */}
+      <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+        <FlatList
+          data={activeTab === "trades" ? DATA : OFFERS_DATA}
+          renderItem={activeTab === "trades" ? renderTradeItem : renderOfferItem}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 80 }}
+        />
+      </Animated.View>
+
+      {/* Add Item */}
+      <Animated.View style={{ transform: [{ scale: addButtonScale }] }}>
+        <TouchableOpacity style={styles.addButton} onPress={handleAddItemPress}>
+          <Text style={styles.addText}>Add Item  +</Text>
+        </TouchableOpacity>
+      </Animated.View>
+
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: "#efeff4",
+    padding: 14
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  tabs: {
+    flexDirection: "row",
+    marginBottom: 12
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  activeTab: {
+    backgroundColor: NAVY,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 10,
+    marginRight: 8
   },
+  inactiveTab: {
+    backgroundColor: "#bfbfbf",
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 10,
+    marginRight: 8
+  },
+  activeText: {
+    color: "white",
+    fontWeight: "600"
+  },
+  inactiveText: {
+    color: "#555"
+  },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#e6e6ea",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 10
+  },
+  searchIcon: {
+    fontSize: 16,
+    marginRight: 8
+  },
+  searchInput: {
+    flex: 1
+  },
+  row: {
+    flexDirection: "row",
+    marginBottom: 10
+  },
+  smallButton: {
+    backgroundColor: "#d0d0d0",
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 8,
+    marginRight: 8
+  },
+  smallText: {
+    fontSize: 13,
+    color: "#444"
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#e6e6ea",
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 10
+  },
+  image: {
+    width: 55,
+    height: 55,
+    borderRadius: 8,
+    marginRight: 10
+  },
+  itemName: {
+    flex: 1,
+    fontWeight: "600",
+    color: "#222"
+  },
+  offerButton: {
+    backgroundColor: "#bfbfbf",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 7
+  },
+  statusButton: {
+    backgroundColor: "#bfbfbf",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 7
+  },
+  offerText: {
+    fontSize: 12,
+    color: "#333"
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: NAVY,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 10
+  },
+  addText: {
+    color: "white",
+    fontWeight: "700"
+  }
 });
