@@ -162,7 +162,8 @@ const styles = StyleSheet.create({
   },
   tabs: {
     flexDirection: "row",
-    marginBottom: 12
+    marginBottom: 12,
+    marginHorizontal: 15,
   },
   activeTab: {
     backgroundColor: NAVY,
@@ -192,7 +193,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    marginBottom: 10
+    marginBottom: 10,
+    marginHorizontal: 15,
   },
   searchIcon: {
     fontSize: 16,
@@ -203,7 +205,8 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    marginBottom: 10
+    marginBottom: 10,
+    marginHorizontal: 15,
   },
   smallButton: {
     backgroundColor: "#d0d0d0",
@@ -222,7 +225,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#e6e6ea",
     padding: 12,
     borderRadius: 12,
-    marginBottom: 10
+    marginBottom: 10,
+    marginHorizontal: 15,
   },
   image: {
     width: 55,

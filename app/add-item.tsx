@@ -139,9 +139,11 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginRight: 12,
+    marginHorizontal: 15,
   },
   backArrow: {
     fontSize: 22,
+    fontWeight: "1000",
     color: "#222",
   },
   headerTitle: {
@@ -155,11 +157,13 @@ const styles = StyleSheet.create({
     color: "#111",
     marginBottom: 10,
     marginTop: 8,
+    marginHorizontal: 15,
   },
   photoRow: {
     flexDirection: "row",
     gap: 12,
     marginBottom: 20,
+    marginHorizontal: 15,
   },
   photoBox: {
     width: 120,
@@ -186,6 +190,7 @@ const styles = StyleSheet.create({
   },
   categoryRow: {
     marginBottom: 20,
+    marginHorizontal: 15,
   },
   categoryItem: {
     alignItems: "center",
@@ -220,6 +225,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
     fontSize: 14,
     marginBottom: 24,
+    marginHorizontal: 15,
   },
   submitButton: {
     backgroundColor: NAVY,
@@ -228,6 +234,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 30,
     alignSelf: "flex-end",
+    marginHorizontal: 15,
     paddingHorizontal: 30,
   },
   submitText: {
